@@ -11,9 +11,7 @@ class GmailApi():
     # If modifying these scopes, delete the file token.json.
     SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 
-    def __init__(self, tokenname='token.json', credsname='credentials.json', pathprefix=''):
-        tokenname = os.path.join(pathprefix, tokenname)
-        credsname = os.path.join(pathprefix, credsname)
+    def __init__(self, tokenname='token.json', credsname='credentials.json'):
         store = file.Storage(tokenname)
         creds = store.get()
         if not creds or creds.invalid:

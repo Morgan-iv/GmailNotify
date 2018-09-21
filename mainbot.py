@@ -3,14 +3,18 @@ import vk_api
 import random
 import shelve
 import os.path
+from os import chdir
 from gmailapi import GmailApi
 from botauth import number, passwd
 
 
 def main():
     dbname = "shelvedb"
+    pathprefix = os.path.dirname(os.path.abspath(__file__))
+    chdir(pathprefix)
 
-    gmail = GmailApi(pathprefix=os.path.dirname(os.path.abspath(__file__)))
+
+    gmail = GmailApi()
     newmes = set(gmail.getlist())
 
     db = shelve.open(dbname)
