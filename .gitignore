@@ -1,5 +1,10 @@
 __pycache__/
-apikey
+
+#vk auth
 botauth.py
+
+#gmail user token and app token
 *.json
+
+#messageIDs db
 shelvedb
