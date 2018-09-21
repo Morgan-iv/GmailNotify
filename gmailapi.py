@@ -2,6 +2,7 @@ from __future__ import print_function
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
+import os.path
 
 class GmailApi():
 
@@ -10,7 +11,9 @@ class GmailApi():
     # If modifying these scopes, delete the file token.json.
     SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 
-    def __init__(self, tokenname='token.json', credsname='credentials.json'):
+    def __init__(self, tokenname='token.json', credsname='credentials.json', pathprefix=''):
+        tokenname = os.path.join(pathprefix, tokenname)
+        credsname = os.path.join(pathprefix, credsname)
         store = file.Storage(tokenname)
         creds = store.get()
         if not creds or creds.invalid:

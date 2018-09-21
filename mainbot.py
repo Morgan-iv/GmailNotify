@@ -2,6 +2,7 @@ import time
 import vk_api
 import random
 import shelve
+import os.path
 from gmailapi import GmailApi
 from botauth import number, passwd
 
@@ -9,7 +10,7 @@ from botauth import number, passwd
 def main():
     dbname = "shelvedb"
 
-    gmail = GmailApi()
+    gmail = GmailApi(pathprefix=os.path.dirname(os.path.abspath(__file__)))
     newmes = set(gmail.getlist())
 
     db = shelve.open(dbname)
@@ -34,10 +35,10 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
+
     '''
     dbname = "shelvedb"
     db = shelve.open(dbname)
     db['ids'] = set()
     db.close()
-    '''
+    #'''
