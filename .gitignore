@@ -3,7 +3,7 @@ __pycache__/
 #vk auth
 botauth.py
 
-#gmail user token and app token
+#gmail user token and app token; vk_api token
 *.json
 
 #messageIDs db
