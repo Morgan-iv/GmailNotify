@@ -17,9 +17,10 @@ def main():
 
     gmail = GmailApi()
     if gmail.innerstate() != 0:
-        vk_api.VkApi(number, passwd).auth().get_api().messages.send(peer_id=18269018, message='something wrong')
-        #open(os.path.join(pathprefix, 
-        #create stopfile here
+        tmp = vk_api.VkApi(number, passwd)
+        tmp.auth()
+        tmp.get_api().messages.send(peer_id=18269018, message='something wrong')
+        open('stopfile', 'w').close()
         sys.exit(1)
     newmes = set(gmail.getlist())
 

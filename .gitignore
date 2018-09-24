@@ -8,3 +8,5 @@ botauth.py
 
 #messageIDs db
 shelvedb
+
+stopfile

@@ -27,7 +27,7 @@ class GmailApi():
         return self.state
 
     def getlist(self):
-        if innerstate() != 0:
+        if self.innerstate() != 0:
             return None
         response = self.service.users().messages().list(userId='me', q="is:unread newer_than:1d").execute()
         result = []
@@ -38,7 +38,7 @@ class GmailApi():
         return result
 
     def getmessage(self, messageID):
-        if innerstate() != 0:
+        if self.innerstate() != 0:
             return None
         message = self.service.users().messages().get(userId='me',
                                                       id=messageID,
