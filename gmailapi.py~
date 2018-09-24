@@ -12,23 +12,15 @@ class GmailApi():
     SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
 
     def __init__(self, tokenname='token.json', credsname='credentials.json'):
-        try:
-            store = file.Storage(tokenname)
-            creds = store.get()
-            if not creds or creds.invalid:
-                flow = client.flow_from_clientsecrets(credsname, self.SCOPES)
-                creds = tools.run_flow(flow, store)
-            self.service = build('gmail', 'v1', http=creds.authorize(Http()))
-            self.state = 0
-        except Exception:
-            self.state = 1
-
-    def innerstate(self):
-        return self.state
+        store = file.Storage(tokenname)
+        creds = store.get()
+        if not creds or creds.invalid:
+            print ('we fucked up')
+            flow = client.flow_from_clientsecrets(credsname, self.SCOPES)
+            creds = tools.run_flow(flow, store)
+        self.service = build('gmail', 'v1', http=creds.authorize(Http()))
 
     def getlist(self):
-        if innerstate() != 0:
-            return None
         response = self.service.users().messages().list(userId='me', q="is:unread newer_than:1d").execute()
         result = []
         if response['resultSizeEstimate'] == 0:
@@ -38,8 +30,6 @@ class GmailApi():
         return result
 
     def getmessage(self, messageID):
-        if innerstate() != 0:
-            return None
         message = self.service.users().messages().get(userId='me',
                                                       id=messageID,
                                                       format="metadata",

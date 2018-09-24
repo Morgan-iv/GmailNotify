@@ -3,7 +3,6 @@ import vk_api
 import random
 import shelve
 import os.path
-import sys
 from os import chdir
 from gmailapi import GmailApi
 from botauth import number, passwd
@@ -16,11 +15,6 @@ def main():
 
 
     gmail = GmailApi()
-    if gmail.innerstate() != 0:
-        vk_api.VkApi(number, passwd).auth().get_api().messages.send(peer_id=18269018, message='something wrong')
-        #open(os.path.join(pathprefix, 
-        #create stopfile here
-        sys.exit(1)
     newmes = set(gmail.getlist())
 
     db = shelve.open(dbname)
