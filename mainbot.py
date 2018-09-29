@@ -8,18 +8,22 @@ from os import chdir
 from gmailapi import GmailApi
 from botauth import number, passwd
 
+def vk_send(number, passwd, peer_id, message):
+    vk_session = vk_api.VkApi(number, passwd)
+    vk_session.auth()
+    vk_session.get_api().messages.send(random_id=random.randint(0, 65536), peer_id=peer_id, message=message)
 
 def main():
     dbname = "shelvedb"
+    max_vk_message = 4096
+    peer_id = 18269018
     pathprefix = os.path.dirname(os.path.abspath(__file__))
     chdir(pathprefix)
 
 
     gmail = GmailApi()
     if gmail.innerstate() != 0:
-        tmp = vk_api.VkApi(number, passwd)
-        tmp.auth()
-        tmp.get_api().messages.send(peer_id=18269018, message='something wrong')
+        vk_send(number, passwd, peer_id, 'something wrong')
         open('stopfile', 'w').close()
         sys.exit(1)
     newmes = set(gmail.getlist())
@@ -28,21 +32,26 @@ def main():
     oldmes = db['ids']
     db.close()
 
+    length = 0
     resultstr = ''
     for mes in newmes - oldmes:
         tmp = gmail.getmessage(mes)
-        resultstr = resultstr + 'From: {}\nSubject: {}\nSnippet: {}\n\n'.format(tmp[0], tmp[1], tmp[2])
-    #print (resultstr)
+        gotemail = 'From: {}\nSubject: {}\nSnippet: {}\n\n'.format(tmp[0], tmp[1], tmp[2])
+        if length + len(gotemail) < 4096:
+            length = length + len(gotemail)
+            resultstr = resultstr + gotemail
+        else:
+            vk_send(number, passwd, peer_id, resultstr)
+            resultstr = gotemail
+            length = len(gotemail)
+            time.sleep(5)
 
     db = shelve.open(dbname)
     db['ids'] = newmes
     db.close()
 
     if not resultstr == '':
-        vk_session = vk_api.VkApi(number, passwd)
-        vk_session.auth()
-        vk = vk_session.get_api()
-        vk.messages.send(random_id=random.randint(0, 65536), peer_id=18269018, message=resultstr)
+        vk_send(number, passwd, peer_id, resultstr)
 
 if __name__ == '__main__':
     main()
