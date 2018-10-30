@@ -7,6 +7,7 @@ import sys
 from os import chdir
 from gmailapi import GmailApi
 from botauth import number, passwd
+from cutexcess import whitelist, blacklist 
 
 def vk_send(number, passwd, peer_id, message):
     vk_session = vk_api.VkApi(number, passwd)
@@ -36,15 +37,28 @@ def main():
     resultstr = ''
     for mes in newmes - oldmes:
         tmp = gmail.getmessage(mes)
-        gotemail = 'From: {}\nSubject: {}\nSnippet: {}\n\n'.format(tmp[0], tmp[1], tmp[2])
-        if length + len(gotemail) < 4096:
-            length = length + len(gotemail)
-            resultstr = resultstr + gotemail
-        else:
-            vk_send(number, passwd, peer_id, resultstr)
-            resultstr = gotemail
-            length = len(gotemail)
-            time.sleep(5)
+
+        flag = True
+        for b in blacklist:
+            flag = b not in tmp[1]
+            if not flag:
+                break
+        if not flag:
+            for w in whitelist:
+                flag = w in tmp[1]
+                if flag:
+                    break
+
+        if flag:
+            gotemail = 'From: {}\nSubject: {}\nSnippet: {}\n\n'.format(tmp[0], tmp[1], tmp[2])
+            if length + len(gotemail) < 4096:
+                length = length + len(gotemail)
+                resultstr = resultstr + gotemail
+            else:
+                vk_send(number, passwd, peer_id, resultstr)
+                resultstr = gotemail
+                length = len(gotemail)
+                time.sleep(5)
 
     db = shelve.open(dbname)
     db['ids'] = newmes
