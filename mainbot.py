@@ -33,8 +33,8 @@ def main():
     oldmes = db['ids']
     db.close()
 
-    length = 0
-    resultstr = ''
+    resultstr = 'new day\n' if (time.localtime().tm_hour == 0) else ''
+    length = len(resultstr)
     for mes in newmes - oldmes:
         tmp = gmail.getmessage(mes)
 
