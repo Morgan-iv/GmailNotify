@@ -6,13 +6,12 @@ import os.path
 import sys
 from os import chdir
 from gmailapi import GmailApi
-from botauth import number, passwd
+from botauth import token
 from cutexcess import whitelist, blacklist 
 
-def vk_send(number, passwd, peer_id, message):
-    vk_session = vk_api.VkApi(number, passwd)
-    vk_session.auth()
-    vk_session.get_api().messages.send(random_id=random.randint(0, 65536), peer_id=peer_id, message=message)
+def vk_send(token, peer_id, message):
+    vk_session = vk_api.VkApi(token=token)
+    vk_session.method('messages.send', {'random_id' : random.randint(0, 65536), 'peer_id' : peer_id, 'message' : message})
 
 def main():
     dbname = "shelvedb"
@@ -24,7 +23,7 @@ def main():
 
     gmail = GmailApi()
     if gmail.innerstate() != 0:
-        vk_send(number, passwd, peer_id, 'something wrong')
+        vk_send(token, peer_id, 'something wrong')
         open('stopfile', 'w').close()
         sys.exit(1)
     newmes = set(gmail.getlist())
@@ -55,7 +54,7 @@ def main():
                 length = length + len(gotemail)
                 resultstr = resultstr + gotemail
             else:
-                vk_send(number, passwd, peer_id, resultstr)
+                vk_send(token, peer_id, resultstr)
                 resultstr = gotemail
                 length = len(gotemail)
                 time.sleep(5)
@@ -65,7 +64,7 @@ def main():
     db.close()
 
     if not resultstr == '':
-        vk_send(number, passwd, peer_id, resultstr)
+        vk_send(token, peer_id, resultstr)
 
 if __name__ == '__main__':
     main()
