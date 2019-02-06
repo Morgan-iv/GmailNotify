@@ -68,10 +68,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    '''
-    dbname = "shelvedb"
-    db = shelve.open(dbname)
-    db['ids'] = set()
-    db.close()
-    #'''
