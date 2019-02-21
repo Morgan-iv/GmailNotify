@@ -4,10 +4,11 @@ import random
 import shelve
 import os.path
 import sys
+import pewds
 from os import chdir
 from gmailapi import GmailApi
-from botauth import token
-from cutexcess import whitelist, blacklist 
+from botauth import vk_token, yt_token
+from cutexcess import whitelist, blacklist
 
 def vk_send(token, peer_id, message):
     vk_session = vk_api.VkApi(token=token)
@@ -20,10 +21,9 @@ def main():
     pathprefix = os.path.dirname(os.path.abspath(__file__))
     chdir(pathprefix)
 
-
     gmail = GmailApi()
     if gmail.innerstate() != 0:
-        vk_send(token, peer_id, 'something wrong')
+        vk_send(vk_token, peer_id, 'something wrong')
         open('stopfile', 'w').close()
         sys.exit(1)
     newmes = set(gmail.getlist())
@@ -32,8 +32,13 @@ def main():
     oldmes = db['ids']
     db.close()
 
-    resultstr = 'new day\n' if (time.localtime().tm_hour == 0) else ''
+    resultstr = 'new day\n\n' if (time.localtime().tm_hour == 0) else ''
     length = len(resultstr)
+
+    resultstr += 'PewDiePie vs T-Series:\n'
+    resultstr += pewds.get_difference('PewDiePie', 'TSeries', yt_token) + '\n\n'
+    length = len(resultstr)
+
     for mes in newmes - oldmes:
         tmp = gmail.getmessage(mes)
 
@@ -54,7 +59,7 @@ def main():
                 length = length + len(gotemail)
                 resultstr = resultstr + gotemail
             else:
-                vk_send(token, peer_id, resultstr)
+                vk_send(vk_token, peer_id, resultstr)
                 resultstr = gotemail
                 length = len(gotemail)
                 time.sleep(5)
@@ -64,7 +69,7 @@ def main():
     db.close()
 
     if not resultstr == '':
-        vk_send(token, peer_id, resultstr)
+        vk_send(vk_token, peer_id, resultstr)
 
 if __name__ == '__main__':
     main()
