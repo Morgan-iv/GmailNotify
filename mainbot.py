@@ -35,9 +35,11 @@ def main():
     resultstr = 'new day\n\n' if (time.localtime().tm_hour == 0) else ''
     length = len(resultstr)
 
+    '''
     resultstr += 'PewDiePie vs T-Series:\n'
     resultstr += pewds.get_difference('PewDiePie', 'TSeries', yt_token) + '\n\n'
     length = len(resultstr)
+    '''
 
     for mes in newmes - oldmes:
         tmp = gmail.getmessage(mes)
