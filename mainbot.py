@@ -1,3 +1,4 @@
+import datetime
 import time
 import vk_api
 import random
@@ -13,6 +14,12 @@ from cutexcess import whitelist, blacklist
 def vk_send(token, peer_id, message):
     vk_session = vk_api.VkApi(token=token)
     vk_session.method('messages.send', {'random_id' : random.randint(0, 65536), 'peer_id' : peer_id, 'message' : message})
+
+
+#vk_session.method('messages.getHistory', {'count' : '1',  'peer_id' : peer_id})
+#res['items'][0]['from_id']
+#res['items'][0]['text']
+
 
 def main():
     dbname = "shelvedb"
@@ -32,7 +39,8 @@ def main():
     oldmes = db['ids']
     db.close()
 
-    resultstr = 'new day\n\n' if (time.localtime().tm_hour == 0) else ''
+    todayneed = (datetime.date.today() - datetime.date(2019, 3, 2)).days + 15
+    resultstr = 'new day\ntoday need {}\n\n'.format(todayneed) if (time.localtime().tm_hour == 0) else ''
     length = len(resultstr)
 
     '''
