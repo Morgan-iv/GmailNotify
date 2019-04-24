@@ -10,6 +10,7 @@ from os import chdir
 from gmailapi import GmailApi
 from botauth import vk_token, yt_token
 from cutexcess import whitelist, blacklist
+from natribu import geowrapper
 
 def vk_send(token, peer_id, message):
     vk_session = vk_api.VkApi(token=token)
@@ -20,6 +21,26 @@ def vk_send(token, peer_id, message):
 #res['items'][0]['from_id']
 #res['items'][0]['text']
 
+def newday_geo():
+    moscow_center = (55.754657, 37.619338)
+
+    resultstr = ''
+    point, azi, compass = geowrapper()(moscow_center)
+    resultstr += 'Where will we go today:\n'
+    resultstr += 'lat: {}\nlon: {}\n'.format(point.lat, point.lon)
+    resultstr += 'azimuth: {}\n'.format(azi)
+    resultstr += 'compass: {}\n'.format(compass)
+    return resultstr
+
+def newday_phys():
+    todayneed = (datetime.date.today() - datetime.date(2019, 3, 2)).days + 15
+    return 'today need {}\n'.format(todayneed)
+
+def newday():
+    resultstr = 'new day\n'
+    #resultstr += newday_phys() + '\n'
+    resultstr += newday_geo() + '\n'
+    return resultstr
 
 def main():
     dbname = "shelvedb"
@@ -39,8 +60,10 @@ def main():
     oldmes = db['ids']
     db.close()
 
-    todayneed = (datetime.date.today() - datetime.date(2019, 3, 2)).days + 15
-    resultstr = 'new day\ntoday need {}\n\n'.format(todayneed) if (time.localtime().tm_hour == 0) else ''
+    if time.localtime().tm_hour == 0:
+        resultstr = newday()
+    else:
+        resultstr = ''
     length = len(resultstr)
 
     '''
